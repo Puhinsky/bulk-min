@@ -28,7 +28,7 @@ inline double base_method::calculate_sigma(size_t layer)
 inline void base_method::calculate_pq_of_first_point(size_t layer)
 {
 	m_p[0] = 0;
-	m_q[0] = m_data.get()->m_temperatures[get_temperatures_index(layer - 1, 0)];
+	m_q[0] = m_data.get()->m_temperatures[get_temperature_index(layer - 1, 0)];
 }
 
 void base_method::calculate_pq_of_other_point(double sigma)
@@ -58,14 +58,14 @@ inline void base_method::back_propagation(size_t layer)
 	}
 }
 
-inline size_t base_method::get_temperatures_index(size_t layer, size_t space_number)
+inline size_t base_method::get_temperature_index(size_t layer, size_t space_number)
 {
 	return layer * m_data.get()->m_header.space_segments + space_number;
 }
 
 void base_method::evaluate_error(size_t layer, size_t index)
 {
-	auto temperature_index = get_temperatures_index(layer, index);
+	auto temperature_index = get_temperature_index(layer, index);
 
 	if (m_data.get()->m_conductivities[temperature_index] < 0.0)
 		return;
@@ -83,6 +83,19 @@ std::unique_ptr<double[]> base_method::compute_task()
 	}
 
 	return move(m_error);
+}
+
+double base_method::compute_task_sum()
+{
+	double error_sum = 0.0;
+	compute_task();
+
+	for (size_t i = 0; m_data.get()->m_header.space_segments; i++)
+	{
+		error_sum = m_error[i];
+	}
+
+	return error_sum;
 }
 
 base_method::base_method()
