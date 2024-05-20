@@ -128,11 +128,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="base_method.cpp" />
     <ClCompile Include="database.cpp" />
     <ClCompile Include="log.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="base_method.h" />
     <ClInclude Include="database.h" />
     <ClInclude Include="header.h" />
     <ClInclude Include="log.h" />
