@@ -25,6 +25,7 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="parser.cpp">
+    <ClCompile Include="base_method.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -39,6 +40,7 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="parser.h">
+    <ClInclude Include="base_method.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
