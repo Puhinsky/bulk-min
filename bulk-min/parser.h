@@ -18,6 +18,7 @@ private:
 	bool try_parse(std::vector<std::string>& vec) const;
 	bool try_read_header(std::vector<std::string>& vec, header& header) const;
 	bool try_read_data(std::vector<std::string>& vec, database& data);
+	bool verificator(database& data);
 
 public:
 	parser();

@@ -41,6 +41,9 @@ bool parser::try_all()
 	if (!try_read_data(text, m_data))
 		return false;
 
+	if(verificator(m_data))
+		return false;
+
 	return true;
 }
 
@@ -370,4 +373,75 @@ bool parser::try_read_data(std::vector<std::string>& vec, database& data)
 	}
 
 	return true;
+}
+
+bool parser::verificator(database& data)
+{
+	bool error_flag = 0;
+
+	if (data.m_header.length <= 0)
+	{
+		cout << "\nWarning! Incorrect value of bulk's lenth\n" << endl;
+		error_flag = 1;
+	}
+	if (data.m_header.space_segments <= 0 && data.m_header.space_segments >= 10000)
+	{
+		cout << "\nWarning! Incorrect value of space segments\n" << endl;
+		error_flag = 1;
+	}
+	if (data.m_header.time_segments <= 0 && data.m_header.time_segments >= 1000)
+	{
+		cout << "\nWarning! Incorrect value of time segments\n" << endl;
+		error_flag = 1;
+	}
+
+	for (int i = 0; i < data.m_header.time_segments; i++)
+	{
+		if (data.m_time_scale[i] != i)
+		{
+			cout << "\nWarning! Wrong time segments\n" << endl;
+			error_flag = 1;
+		}
+	}
+
+	for (int i = 0; i < data.m_header.space_segments; i++)
+	{
+		if (data.m_temperatures[i] == -1)
+		{
+			cout << "\nWarning! Initial temperatures missed\n" << endl;
+			error_flag = 1;
+		}
+	}
+
+	for (int i = data.m_header.space_segments - 1; i < (data.m_header.space_segments) * (data.m_header.time_segments) - data.m_header.space_segments; i += data.m_header.space_segments)
+	{
+		if (data.m_temperatures[i] == -1 || data.m_temperatures[i + 1] == -1)
+		{
+			cout << "\nWarning! Edge temperatures missed\n" << endl;
+			error_flag = 1;
+		}
+	}
+	if (data.m_temperatures[0] == -1 || data.m_temperatures[(data.m_header.space_segments) * (data.m_header.time_segments) - 1] == -1)
+	{
+		cout << "\nWarning! Edge temperatures missed\n" << endl;
+		error_flag = 1;
+	}
+
+	//проверка правильности секции теплопроводностей
+	for (int i = 0; i < data.m_header.space_segments; i++)
+	{
+		if (data.m_conductivities[i] < 0)
+		{
+			cout << "\nWarning! Negative conductivity koefficient\n" << endl;
+			error_flag = 1;
+		}
+	}
+
+	if (!error_flag)
+	{
+		cout << "Data test passed" << endl;
+	}
+
+
+	return error_flag;
 }
