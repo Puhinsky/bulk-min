@@ -24,6 +24,10 @@
     <ClCompile Include="main.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="parser.cpp">
+    <ClCompile Include="base_method.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="database.h">
@@ -33,6 +37,10 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="log.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="parser.h">
+    <ClInclude Include="base_method.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

@@ -10,7 +10,8 @@ enum log_source_e
 	EXPORTER,
 	GENETIC,
 	CYCLE,
-	SIMPLEX
+	SIMPLEX,
+	BASE_METHOD
 };
 
 class log

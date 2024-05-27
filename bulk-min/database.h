@@ -1,7 +1,8 @@
 #pragma once
 
-#include <memory>
 #include "header.h"
+#include <memory>
+#include <random>
 
 class database
 {
@@ -13,5 +14,6 @@ public:
 
 	database();
 	database(header header);
+	void randomize_conductivities(double from = 0.0, double to = 1.0) const;
 };
 

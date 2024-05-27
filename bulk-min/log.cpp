@@ -14,7 +14,8 @@ map<log_source_e, string> log::m_source_map =
 	{EXPORTER, "Exporter"},
 	{GENETIC, "Genetic"},
 	{CYCLE, "Cycle"},
-	{SIMPLEX, "Simplex"}
+	{SIMPLEX, "Simplex"},
+	{BASE_METHOD, "Base method"}
 };
 
 void log::print(const log_source_e source, const std::string& text)
