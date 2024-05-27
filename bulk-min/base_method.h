@@ -1,6 +1,7 @@
 #pragma once
 
 #include "database.h"
+#include "log.h"
 #include <xmemory>
 
 class base_method
@@ -23,7 +24,7 @@ private:
 	void evaluate_error(size_t layer, size_t index);
 
 protected:
-	std::unique_ptr<double[]> compute_task();
+	std::shared_ptr<double[]> compute_task();
 	double compute_task_sum();
 	virtual void on_init();
 	virtual void on_iteration();

@@ -4,7 +4,7 @@ using namespace std;
 
 void base_method::copy_first_layer()
 {
-	for (size_t i = 0; m_data.get()->m_header.space_segments; i++)
+	for (size_t i = 0; i < m_data.get()->m_header.space_segments; i++)
 	{
 		m_result_temperatures[i] = m_data.get()->m_temperatures[i];
 	}
@@ -14,7 +14,7 @@ void base_method::calculate_layer(size_t layer)
 {
 	double sigma = calculate_sigma(layer);
 	calculate_pq_of_first_point(layer);
-	calculate_pq_of_other_point(layer);
+	calculate_pq_of_other_point(sigma);
 	back_propagation(layer);
 }
 
@@ -33,7 +33,7 @@ inline void base_method::calculate_pq_of_first_point(size_t layer)
 
 void base_method::calculate_pq_of_other_point(double sigma)
 {
-	for (size_t i = 1; i < m_data.get()->m_header.space_segments; i++)
+	for (size_t i = 1; i < m_data.get()->m_header.space_segments - 1; i++)
 	{
 		auto cond_left = m_data.get()->m_conductivities[i - 1];
 		auto cond_center = m_data.get()->m_conductivities[i];
@@ -70,10 +70,10 @@ void base_method::evaluate_error(size_t layer, size_t index)
 	if (m_data.get()->m_conductivities[temperature_index] < 0.0)
 		return;
 
-	m_error[index] += pow(m_result_temperatures[index] - m_data.get()->m_conductivities[temperature_index], 2);
+	m_error[index] += pow(m_result_temperatures[index] - m_data.get()->m_temperatures[temperature_index], 2);
 }
 
-std::unique_ptr<double[]> base_method::compute_task()
+std::shared_ptr<double[]> base_method::compute_task()
 {
 	copy_first_layer();
 
@@ -88,11 +88,11 @@ std::unique_ptr<double[]> base_method::compute_task()
 double base_method::compute_task_sum()
 {
 	double error_sum = 0.0;
-	compute_task();
+	auto error = compute_task();
 
-	for (size_t i = 0; m_data.get()->m_header.space_segments; i++)
+	for (size_t i = 0; i < m_data.get()->m_header.space_segments; i++)
 	{
-		error_sum = m_error[i];
+		error_sum += error[i];
 	}
 
 	return error_sum;
