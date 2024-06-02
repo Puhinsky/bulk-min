@@ -132,6 +132,7 @@
     <ClCompile Include="cli.cpp" />
     <ClCompile Include="database.cpp" />
     <ClCompile Include="exporter.cpp" />
+    <ClCompile Include="genetic.cpp" />
     <ClCompile Include="log.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="parser.cpp" />
@@ -142,6 +143,7 @@
     <ClInclude Include="cli.h" />
     <ClInclude Include="database.h" />
     <ClInclude Include="exporter.h" />
+    <ClInclude Include="genetic.h" />
     <ClInclude Include="header.h" />
     <ClInclude Include="log.h" />
     <ClInclude Include="parser.h" />

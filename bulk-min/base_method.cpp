@@ -70,7 +70,16 @@ void base_method::evaluate_error(size_t layer, size_t index)
 	if (m_data.get()->m_temperatures[temperature_index] < 0.0)
 		return;
 
-	m_error[index] += pow(m_result_temperatures[index] - m_data.get()->m_temperatures[temperature_index], 2);
+	auto result_temperature = m_result_temperatures[index];
+	auto data_temperature = m_data.get()->m_temperatures[temperature_index];
+
+	if (m_round_enable)
+	{
+		result_temperature = round(result_temperature * 1000.) / 1000.;
+		data_temperature = round(data_temperature * 1000.) / 1000.;
+	}
+
+	m_error[index] += pow(result_temperature - data_temperature, 2);
 }
 
 void base_method::print_temperatures() const
@@ -142,7 +151,6 @@ base_method::base_method()
 {
 	m_round_enable = false;
 	m_delta_space_multiplier = 0.0;
-	m_conductivities = new double;
 	m_result_temperatures = new double;
 	m_error = new double;
 	m_p = new double;
@@ -151,7 +159,6 @@ base_method::base_method()
 
 base_method::~base_method()
 {
-	delete[] m_conductivities;
 	delete[] m_result_temperatures;
 	delete[] m_error;
 	delete[] m_p;
@@ -160,8 +167,14 @@ base_method::~base_method()
 
 void base_method::run(shared_ptr<database> data)
 {
+	if (data == nullptr)
+	{
+		log::error(BASE_METHOD, "first you need to load the database");
+
+		return;
+	}
+
 	m_data = move(data);
-	m_conductivities = new double[m_data.get()->m_header.space_segments];
 	m_result_temperatures = new double[m_data.get()->m_header.space_segments];
 	m_delta_space_multiplier = 2.0 * pow(m_data.get()->m_header.length / m_data.get()->m_header.space_segments, 2);
 	m_error = new double[m_data.get()->m_header.space_segments];

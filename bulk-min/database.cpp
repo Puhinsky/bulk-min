@@ -67,6 +67,10 @@ database::database(header header)
 	m_conductivities = new double[header.space_segments];
 	m_temperatures = new double[header.space_segments * header.time_segments];
 	m_time_scale = new double[header.time_segments];
+
+	//Fill with zeros
+	for (int i = 0; i < header.space_segments; i++)
+		m_conductivities[i] = 0.;
 }
 
 database::~database()
