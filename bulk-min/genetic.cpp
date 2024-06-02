@@ -146,7 +146,7 @@ void genetic::on_iteration()
 	}
 
 	//TODO: Print via log class
-	printf("Remaining iterations: %d | erC: %.3f | L: %.6f | Error: %f | Remaining time: %.1f s\n", m_iter-1,
+	printf("\033[36m[INFO] Remaining iterations: %d | erC: %.3f | L: %.6f | Error: %f | Remaining time: %.1f s\n\033[0m", m_iter-1,
 		m_erC, m_L, m_populations[0].error, ((double)(clock() - m_internalClock)) * m_iter / CLOCKS_PER_SEC);
 
 	m_internalClock = clock();

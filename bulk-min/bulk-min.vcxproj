@@ -130,6 +130,7 @@
   <ItemGroup>
     <ClCompile Include="base_method.cpp" />
     <ClCompile Include="cli.cpp" />
+    <ClCompile Include="cycle.cpp" />
     <ClCompile Include="database.cpp" />
     <ClCompile Include="exporter.cpp" />
     <ClCompile Include="genetic.cpp" />
@@ -141,6 +142,7 @@
   <ItemGroup>
     <ClInclude Include="base_method.h" />
     <ClInclude Include="cli.h" />
+    <ClInclude Include="cycle.h" />
     <ClInclude Include="database.h" />
     <ClInclude Include="exporter.h" />
     <ClInclude Include="genetic.h" />
