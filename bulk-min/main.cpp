@@ -1,5 +1,6 @@
 #include "simplex.h"
 #include "genetic.h"
+#include "cycle.h"
 #include "parser.h"
 #include <memory>
 #include "cli.h"
@@ -21,6 +22,7 @@ parser g_parser;
 exporter g_exporter;
 simplex g_simplex;
 genetic g_genetic;
+cycle g_cycle;
 
 int main()
 {
@@ -63,7 +65,36 @@ void on_export(const map<string, string>& options)
 }
 
 void on_cycle(const map<string, string>&options)
-{}
+{
+	string parameter;
+
+	if (g_cli.match_option(options, "step", parameter))
+	{
+		g_cycle.set_step(stod(parameter));
+	}
+
+	if (g_cli.match_option(options, "step_div", parameter))
+	{
+		g_cycle.set_step_divider(stod(parameter));
+	}
+
+	if (g_cli.match_option(options, "erosion", parameter))
+	{
+		g_cycle.set_erosion(stoi(parameter));
+	}
+
+	if (g_cli.match_option(options, "min_step", parameter))
+	{
+		g_cycle.set_epsilon(stod(parameter));
+	}
+
+	if (g_cli.match_option(options, "round", parameter))
+	{
+		g_cycle.set_round_enable(stoi(parameter));
+	}
+
+	g_cycle.run(g_data);
+}
 
 void on_genetic(const map<string, string>&options)
 {
