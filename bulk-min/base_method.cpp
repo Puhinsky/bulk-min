@@ -70,7 +70,16 @@ void base_method::evaluate_error(size_t layer, size_t index)
 	if (m_data.get()->m_temperatures[temperature_index] < 0.0)
 		return;
 
-	m_error[index] += pow(m_result_temperatures[index] - m_data.get()->m_temperatures[temperature_index], 2);
+	auto result_temperature = m_result_temperatures[index];
+	auto data_temperature = m_data.get()->m_temperatures[temperature_index];
+
+	if (m_round_enable)
+	{
+		result_temperature = round(result_temperature * 1000.) / 1000.;
+		data_temperature = round(data_temperature * 1000.) / 1000.;
+	}
+
+	m_error[index] += pow(result_temperature - data_temperature, 2);
 }
 
 void base_method::print_temperatures() const
