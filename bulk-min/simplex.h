@@ -7,6 +7,7 @@ class simplex : public base_method
 private:
 	size_t m_points_count;
 	size_t m_dimension;
+	size_t m_max_steps;
 	double m_l;
 	double m_sigma;
 	double m_epsilon;
@@ -16,6 +17,7 @@ private:
 	double* m_reflected;
 	double* m_center;
 	std::map<size_t, double> m_reflected_map;
+	size_t m_current_step;
 
 	void build_simplex(const double* base_vertex);
 	void print_x() const;
@@ -39,8 +41,9 @@ public:
 	simplex();
 	~simplex();
 
-	void set_step(double value);
-	void set_step_divider(double value);
-	void set_min_step(double value);
+	void set_edge(double value);
+	void set_divider(double value);
+	void set_min_edge(double value);
+	void set_max_steps(size_t value);
 };
 
