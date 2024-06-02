@@ -27,6 +27,7 @@ private:
 	void compute_center_for_reflect(size_t index);
 	void reduce();
 	size_t find_index_of_min_reflected_point() const;
+	void report_deviation(std::string prefix);
 
 protected:
 	void on_init() override;
@@ -36,6 +37,7 @@ protected:
 
 public:
 	simplex();
+	~simplex();
 
 	void set_step(double value);
 	void set_step_divider(double value);
