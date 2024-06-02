@@ -166,7 +166,8 @@ void base_method::run(shared_ptr<database> data)
 	m_error = new double[m_data.get()->m_header.space_segments];
 	m_p = new double[m_data.get()->m_header.space_segments - 1];
 	m_q = new double[m_data.get()->m_header.space_segments - 1];
-
+	
+	init_errors();
 	on_init();
 
 	do
