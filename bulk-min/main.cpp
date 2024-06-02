@@ -32,6 +32,13 @@ int main()
 
 	g_cli.start();
 
+	if (g_data != nullptr)
+	{
+		delete[] g_data.get()->m_conductivities;
+		delete[] g_data.get()->m_temperatures;
+		delete[] g_data.get()->m_time_scale;
+	}
+
 	return 0;
 }
 
