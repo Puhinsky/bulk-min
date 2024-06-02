@@ -5,6 +5,7 @@ using namespace std;
 parser::parser()
 {}
 
+//starts try_all() function
 database parser::load(string path)
 {
 	m_file_path = path;
@@ -22,6 +23,7 @@ database parser::load(string path)
 	return m_data;
 }
 
+//serially starts functions, working with file
 bool parser::try_all()
 {
 	header header{};
@@ -41,12 +43,13 @@ bool parser::try_all()
 	if (!try_read_data(text, m_data))
 		return false;
 
-	if(verificator(m_data))
+	if(!verificator(m_data))
 		return false;
 
 	return true;
 }
 
+//opens file
 bool parser::try_read(std::vector<std::string>& vec) const
 {
 	string line = "";
@@ -61,6 +64,7 @@ bool parser::try_read(std::vector<std::string>& vec) const
 		return false;
 	}
 
+	//line-by-line reading of the file
 	while (getline(input_file, line))
 	{
 		vec.push_back(line);
@@ -72,6 +76,7 @@ bool parser::try_read(std::vector<std::string>& vec) const
 	return true;
 }
 
+//delete excess strings, check correction of strings
 bool parser::try_parse(std::vector<std::string>& vec) const
 {
 	int grid_count = 0;
@@ -79,18 +84,22 @@ bool parser::try_parse(std::vector<std::string>& vec) const
 	int temp_count = 0;
 	int slash_count = 0;
 
+	//modifying of each line in vector
 	for (int i = 0; i < vec.size(); i++)
 	{
+		//delete all text after block end symbol "/"
 		if (vec[i].find("/") != string::npos)
 		{
 			vec[i].erase(vec[i].begin() + vec[i].find("/"), vec[i].end());
 		}
 
+		//delete comment section
 		if (vec[i].find("--") != string::npos)
 		{
 			vec[i].erase(vec[i].begin() + vec[i].find("--"), vec[i].end());
 		}
 
+		//delete spaces at beginning of the line
 		if (vec[i][0] == ' ')
 		{
 			while (vec[i][0] == ' ')
@@ -99,6 +108,7 @@ bool parser::try_parse(std::vector<std::string>& vec) const
 			}
 		}
 
+		//delete spaces at end of the line
 		if (vec[i] != "")
 		{
 			if (vec[i][vec[i].size() - 1] == ' ')
@@ -110,12 +120,14 @@ bool parser::try_parse(std::vector<std::string>& vec) const
 			}
 		}
 
+		//add srting end symbol "/"
 		if (vec[i] != "")
 		{
 			vec[i].push_back('/');
 		}
 	}
 
+	//delete all empty lines
 	for (int i = 0; i < vec.size(); i++)
 	{
 		if (vec[i] == "")
@@ -124,6 +136,7 @@ bool parser::try_parse(std::vector<std::string>& vec) const
 		}
 	}
 
+	//counts strings with data blocks beginning keywords
 	for (int i = 0; i < vec.size(); i++)
 	{
 		for (int j{}; j <= vec[i].length() - 4; )
@@ -156,57 +169,40 @@ bool parser::try_parse(std::vector<std::string>& vec) const
 		}
 	}
 
-	if (grid_count == 0)
+	if (grid_count != 1)
 	{
-		cout << "\nWarning! GRID header was not found\n" << endl;
+		log::error(PARSER, "Wrong number of GRID keywords");
+		return false;
 	}
-	if (tube_count == 0)
+	if (temp_count != 1)
 	{
-		cout << "\nWarning! TUBE header was not found\n" << endl;
+		log::error(PARSER, "Wrong number of TEMP keywords");
+		return false;
 	}
-	if (temp_count == 0)
+	if (slash_count != 6 && slash_count != 4)
 	{
-		cout << "\nWarning! TEMP header was not found\n" << endl;
-	}
-
-	if (grid_count > 1)
-	{
-		cout << "\nWarning! More then one GRID header was found\n" << endl;
+		log::error(PARSER, "Wrong number of strings");
+		return false;
 	}
 	if (tube_count > 1)
 	{
-		cout << "\nWarning! More then one TUBE header was found\n" << endl;
-	}
-	if (temp_count > 1)
-	{
-		cout << "\nWarning! More then one TEMP header was found\n" << endl;
-	}
-	if (slash_count > 6)
-	{
-		cout << "\nWarning! Too much / markers\n" << endl;
-	}
-	if (slash_count < 6)
-	{
-		cout << "\nWarning! Not enough / markers\n" << endl;
-	}
-
-	if (grid_count == 1 && tube_count == 1 && temp_count == 1 && slash_count == 6)
-	{
-		log::success(PARSER, "Headers test 1 passed");
-	}
-	else
-	{
-		log::error(PARSER, "Headers test 1 failed");
-
+		log::error(PARSER, "Wrong number of TUBE keywords");
 		return false;
 	}
+	if (tube_count == 0)
+	{
+		log::info(PARSER, "File without TUBE section");
+	}
+
+	log::success(PARSER, "Keywords test passed");
 
 	vector<string> temp_vec;
-	temp_vec = vec;
+	temp_vec = vec; 
 	vec.clear();
 	vec.push_back("");
 	vec.push_back("");
 	vec.push_back("");
+	//now "vec" is vector of 2 or 3 empty strings
 
 	for (size_t i = 0; i < temp_vec.size(); i++)
 	{
@@ -227,10 +223,12 @@ bool parser::try_parse(std::vector<std::string>& vec) const
 	return true;
 }
 
+//infills header sructure
 bool parser::try_read_header(std::vector<std::string>& vec, header& header) const
 {
 	int i = 0;
 	int j = 0;
+	int k = 0;
 	string temp_line = "";
 
 	while (i < vec[0].size())
@@ -238,9 +236,15 @@ bool parser::try_read_header(std::vector<std::string>& vec, header& header) cons
 		if (vec[0][i] != ' ' && vec[0][i] != '/')
 		{
 			temp_line += vec[0][i];
+			k++;
 		}
 		else
 		{
+			if (k > 9)
+			{
+				log::error(PARSER, "Too big value of argument in GRID section");
+				return false;
+			}
 			switch (j)
 			{
 			case 0:
@@ -253,62 +257,87 @@ bool parser::try_read_header(std::vector<std::string>& vec, header& header) cons
 				header.time_segments = stoi(temp_line);
 				break;
 			default:
-				log::warning(PARSER, "More then 3 arguments in GRID section");
+				log::error(PARSER, "More then 3 arguments in GRID section");
 
 				return false;
 			}
 			j++;
+			k = 0;
 			temp_line = "";
 		}
 		i++;
 	}
+
+	//checking the correctness of the data in header
+	if (header.length <= 0)
+	{
+		log::error(PARSER, "Wrong bulk's lenght");
+		return false;
+	}
+	if (header.space_segments > 10000 || header.space_segments < 2)
+	{
+		log::error(PARSER, "Wrong nuber of space segments");
+		return false;
+	}
+	if (header.time_segments > 1000 || header.time_segments < 2)
+	{
+		log::error(PARSER, "Wrong nuber of time segments");
+		return false;
+	}
+
 
 	log::success(PARSER, "Headers infilled successfully");
 
 	return true;
 }
 
+//infills data structure
 bool parser::try_read_data(std::vector<std::string>& vec, database& data)
 {
 	int i = 0;
 	int j = 0;
 	string temp_line = "";
-	while (i < vec[1].size())
-	{
-		if (vec[1][i] == ' ' || vec[1][i] == '/')
-		{
-			j++;
-		}
-		i++;
-	}
-	if (j != data.m_header.space_segments)
-	{
-		cout << "\nWarning! Wrong nuber of conductivity coefficients\n" << endl;
 
-		return false;
-	}
+	//counts number of elements in TUBE section if this section exists
+	if (vec[1].size() > 0)
+	{
+		while (i < vec[1].size())
+		{
+			if (vec[1][i] == ' ' || vec[1][i] == '/')
+			{
+				j++;
+			}
+			i++;
+		}
+		if (j != data.m_header.space_segments)
+		{
+			log::error(PARSER, "Wrong nuber of elements in TUBE section");
+			return false;
+		}
 
-	i = 0;
-	j = 0;
-	temp_line = "";
-	while (i < vec[1].size())
-	{
-		if (vec[1][i] != ' ' && vec[1][i] != '/')
+		i = 0;
+		j = 0;
+		temp_line = "";
+		while (i < vec[1].size())
 		{
-			temp_line += vec[1][i];
+			if (vec[1][i] != ' ' && vec[1][i] != '/')
+			{
+				temp_line += vec[1][i];
+			}
+			else
+			{
+				data.m_conductivities[j] = stod(temp_line);
+				temp_line = "";
+				j++;
+			}
+			i++;
 		}
-		else
+		if (j == data.m_header.space_segments)
 		{
-			data.m_conductivities[j] = stod(temp_line);
-			temp_line = "";
-			j++;
+			log::success(PARSER, "TUBE section infilled successfully");
 		}
-		i++;
 	}
-	if (j == data.m_header.space_segments)
-	{
-		cout << "Coefficients infilled successfully" << endl;
-	}
+	
 
 	i = 0;
 	j = 0;
@@ -333,8 +362,7 @@ bool parser::try_read_data(std::vector<std::string>& vec, database& data)
 	}
 	if (k != data.m_header.space_segments || j != (data.m_header.space_segments) * (data.m_header.time_segments))
 	{
-		cout << "\nWarning! Wrong number of temperatures\n" << endl;
-
+		log::error(PARSER, "Wrong nuber of elements in TEMP section");
 		return false;
 	}
 
@@ -369,79 +397,61 @@ bool parser::try_read_data(std::vector<std::string>& vec, database& data)
 	}
 	if (k == data.m_header.space_segments && j == (data.m_header.space_segments) * (data.m_header.time_segments))
 	{
-		cout << "Temperatures infilled successfully" << endl;
+		log::success(PARSER, "TEMP section infilled successfully");
 	}
 
 	return true;
 }
 
+//extra data tests
 bool parser::verificator(database& data)
 {
-	bool error_flag = 0;
-
-	if (data.m_header.length <= 0)
-	{
-		cout << "\nWarning! Incorrect value of bulk's lenth\n" << endl;
-		error_flag = 1;
-	}
-	if (data.m_header.space_segments <= 0 && data.m_header.space_segments >= 10000)
-	{
-		cout << "\nWarning! Incorrect value of space segments\n" << endl;
-		error_flag = 1;
-	}
-	if (data.m_header.time_segments <= 0 && data.m_header.time_segments >= 1000)
-	{
-		cout << "\nWarning! Incorrect value of time segments\n" << endl;
-		error_flag = 1;
-	}
-
+	//checks order of time segments
 	for (int i = 0; i < data.m_header.time_segments; i++)
 	{
 		if (data.m_time_scale[i] != i)
 		{
-			cout << "\nWarning! Wrong time segments\n" << endl;
-			error_flag = 1;
+			log::error(PARSER, "Wrong order of time segments");
+			return false;
 		}
 	}
 
+	//all initial temperatures should be declared
 	for (int i = 0; i < data.m_header.space_segments; i++)
 	{
 		if (data.m_temperatures[i] == -1)
 		{
-			cout << "\nWarning! Initial temperatures missed\n" << endl;
-			error_flag = 1;
+			log::error(PARSER, "Initial temperature(s) missed");
+			return false;
 		}
 	}
 
+	//temperatures at edges of bulck should be always declared
 	for (int i = data.m_header.space_segments - 1; i < (data.m_header.space_segments) * (data.m_header.time_segments) - data.m_header.space_segments; i += data.m_header.space_segments)
 	{
 		if (data.m_temperatures[i] == -1 || data.m_temperatures[i + 1] == -1)
 		{
-			cout << "\nWarning! Edge temperatures missed\n" << endl;
-			error_flag = 1;
+			log::error(PARSER, "Edge temperature(s) missed");
+			return false;
 		}
 	}
 	if (data.m_temperatures[0] == -1 || data.m_temperatures[(data.m_header.space_segments) * (data.m_header.time_segments) - 1] == -1)
 	{
-		cout << "\nWarning! Edge temperatures missed\n" << endl;
-		error_flag = 1;
+		log::error(PARSER, "Edge temperature(s) missed");
+		return false;
 	}
 
-	//проверка правильности секции теплопроводностей
-	for (int i = 0; i < data.m_header.space_segments; i++)
+	//checks conductivity coefficients if TUBE section exists
+	/*for (int i = 0; i < data.m_header.space_segments; i++)
 	{
 		if (data.m_conductivities[i] < 0)
 		{
-			cout << "\nWarning! Negative conductivity koefficient\n" << endl;
-			error_flag = 1;
+			log::error(PARSER, "Wrong value(s) of conductivity coeffecient(s)");
+			return false;
 		}
-	}
+	}*/
 
-	if (!error_flag)
-	{
-		cout << "Data test passed" << endl;
-	}
+	log::success(PARSER, "Data verification test passed successfully");
 
-
-	return error_flag;
+	return true;
 }
