@@ -16,7 +16,8 @@ map<log_source_e, string> log::m_source_map =
 	{CYCLE, "Cycle"},
 	{SIMPLEX, "Simplex"},
 	{BASE_METHOD, "Base method"},
-	{DATABASE, "Database"}
+	{DATABASE, "Database"},
+	{CLI, "Cli"}
 };
 
 void log::print(const log_source_e source, const std::string& text)

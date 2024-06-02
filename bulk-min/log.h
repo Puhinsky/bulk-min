@@ -12,7 +12,8 @@ enum log_source_e
 	CYCLE,
 	SIMPLEX,
 	BASE_METHOD,
-	DATABASE
+	DATABASE,
+	CLI
 };
 
 class log
