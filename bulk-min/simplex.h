@@ -21,6 +21,7 @@ private:
 	void print_x() const;
 	void print_y() const;
 	size_t find_index_of_max_point() const;
+	size_t find_index_of_min_point() const;
 	bool try_reflect();
 	void reflect(size_t index);
 	void compute_center_for_reflect(size_t index);

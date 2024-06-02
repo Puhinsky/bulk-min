@@ -5,9 +5,9 @@ using namespace std;
 simplex::simplex()
 {
 	m_points_count = 0;
-	m_l = 2;
-	m_sigma = 0.7;
-	m_epsilon = 0.0001;
+	m_l = 0.1;
+	m_sigma = 0.95;
+	m_epsilon = 0.00001;
 	m_x = new double*;
 	m_y = new double;
 }
@@ -110,6 +110,23 @@ size_t simplex::find_index_of_max_point() const
 	}
 
 	return max_index;
+}
+
+size_t simplex::find_index_of_min_point() const
+{
+	size_t min_index = 0;
+	double min_value = m_y[0];
+
+	for (size_t i = 0; i < m_points_count; i++)
+	{
+		if (m_y[i] < min_value)
+		{
+			min_value = m_y[i];
+			min_index = i;
+		}
+	}
+
+	return min_index;
 }
 
 bool simplex::try_reflect()
@@ -239,6 +256,10 @@ void simplex::on_init()
 	print_y();
 	m_reflected = new double[m_dimension];
 	m_center = new double[m_dimension];
+
+	auto min_index = find_index_of_min_point();
+	double deviation = compute_task_sum(m_x[min_index]);
+	log::info(SIMPLEX, "begin deviation: " + to_string(deviation));
 }
 
 void simplex::on_iteration()
@@ -257,7 +278,16 @@ void simplex::on_iteration()
 }
 
 void simplex::on_termination()
-{}
+{
+	auto min_index = find_index_of_min_point();
+	double deviation = compute_task_sum(m_x[min_index]);
+	log::info(SIMPLEX, "final deviation: " + to_string(deviation));
+
+	for (size_t i = 0; i < m_dimension; i++)
+	{
+		m_data.get()->m_conductivities[i] = m_x[min_index][i];
+	}
+}
 
 bool simplex::termination_condition()
 {
