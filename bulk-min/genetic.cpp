@@ -53,8 +53,6 @@ void genetic::on_init()
 		m_populations[p].conductivity = new double[m_data.get()->m_header.space_segments];
 	}
 
-	build_population();
-
 	m_iter = m_iteration_count;
 	m_erC = .0001;
 	m_oldError = .0;
@@ -70,8 +68,9 @@ void genetic::on_init()
 	m_unif01 = uniform_real_distribution<double>(0, 1);
 	m_unif11 = uniform_real_distribution<double>(-1, 1);
 	m_re = default_random_engine(time(0));
-
 	m_internalClock = clock();
+
+	build_population();
 }
 
 void genetic::on_iteration()

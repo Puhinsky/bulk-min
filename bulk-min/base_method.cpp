@@ -123,6 +123,7 @@ void base_method::init_errors()
 double* base_method::compute_task(double* conductivities)
 {
 	m_conductivities = conductivities;
+	init_errors();
 	copy_first_layer();
 
 	for (size_t i = 1; i < m_data.get()->m_header.time_segments; i++)
@@ -150,7 +151,6 @@ base_method::base_method()
 {
 	m_round_enable = false;
 	m_delta_space_multiplier = 0.0;
-	m_conductivities = new double;
 	m_result_temperatures = new double;
 	m_error = new double;
 	m_p = new double;
@@ -159,7 +159,6 @@ base_method::base_method()
 
 base_method::~base_method()
 {
-	delete[] m_conductivities;
 	delete[] m_result_temperatures;
 	delete[] m_error;
 	delete[] m_p;
@@ -175,8 +174,7 @@ void base_method::run(shared_ptr<database> data)
 	m_error = new double[m_data.get()->m_header.space_segments];
 	m_p = new double[m_data.get()->m_header.space_segments - 1];
 	m_q = new double[m_data.get()->m_header.space_segments - 1];
-	
-	init_errors();
+
 	on_init();
 
 	do
@@ -205,8 +203,6 @@ double base_method::test_run(std::shared_ptr<database> data)
 	m_error = new double[m_data.get()->m_header.space_segments];
 	m_p = new double[m_data.get()->m_header.space_segments - 1];
 	m_q = new double[m_data.get()->m_header.space_segments - 1];
-
-	init_errors();
 
 	return compute_task_sum(m_data.get()->m_conductivities);
 }
