@@ -407,9 +407,9 @@ bool parser::try_read_data(std::vector<std::string>& vec, database& data)
 bool parser::verificator(database& data)
 {
 	//checks order of time segments
-	for (int i = 0; i < data.m_header.time_segments; i++)
+	for (int i = 1; i < data.m_header.time_segments; i++)
 	{
-		if (data.m_time_scale[i] != i)
+		if (data.m_time_scale[i] <= data.m_time_scale[i-1])
 		{
 			log::error(PARSER, "Wrong order of time segments");
 			return false;

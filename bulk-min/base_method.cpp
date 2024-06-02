@@ -167,8 +167,14 @@ base_method::~base_method()
 
 void base_method::run(shared_ptr<database> data)
 {
+	if (data == nullptr)
+	{
+		log::error(BASE_METHOD, "first you need to load the database");
+
+		return;
+	}
+
 	m_data = move(data);
-	m_conductivities = new double[m_data.get()->m_header.space_segments];
 	m_result_temperatures = new double[m_data.get()->m_header.space_segments];
 	m_delta_space_multiplier = 2.0 * pow(m_data.get()->m_header.length / m_data.get()->m_header.space_segments, 2);
 	m_error = new double[m_data.get()->m_header.space_segments];

@@ -5,7 +5,7 @@ using namespace std;
 genetic::genetic()
 {
 	m_population_size = 20;
-	m_iteration_count = 100;
+	m_iteration_count = 10;
 	m_step = .1;
 	m_step_divider = 2.;
 }
