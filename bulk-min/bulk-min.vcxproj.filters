@@ -7,6 +7,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="parser.cpp" />
     <ClCompile Include="simplex.cpp" />
+    <ClCompile Include="cli.cpp" />
+    <ClCompile Include="exporter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="base_method.h" />
@@ -15,5 +17,7 @@
     <ClInclude Include="log.h" />
     <ClInclude Include="parser.h" />
     <ClInclude Include="simplex.h" />
+    <ClInclude Include="cli.h" />
+    <ClInclude Include="exporter.h" />
   </ItemGroup>
 </Project>
