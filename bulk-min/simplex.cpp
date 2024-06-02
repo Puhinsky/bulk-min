@@ -9,6 +9,8 @@ simplex::simplex()
 	m_l = 0.5;
 	m_sigma = 0.5;
 	m_epsilon = 0.001;
+	m_max_steps = 1000;
+	m_current_step = 0;
 	m_x = new double*;
 	m_y = new double;
 	m_reflected = new double;
@@ -28,19 +30,24 @@ simplex::~simplex()
 	delete[] m_center;
 }
 
-void simplex::set_step(double value)
+void simplex::set_edge(double value)
 {
 	m_l = value;
 }
 
-void simplex::set_step_divider(double value)
+void simplex::set_edge_divider(double value)
 {
 	m_sigma = value;
 }
 
-void simplex::set_min_step(double value)
+void simplex::set_min_edge(double value)
 {
 	m_epsilon = value;
+}
+
+void simplex::set_max_steps(size_t value)
+{
+	m_max_steps = value;
 }
 
 void simplex::build_simplex(const double* base_vertex)
@@ -233,12 +240,16 @@ void simplex::compute_center_for_reflect(size_t index)
 void simplex::reduce()
 {
 	m_l *= m_sigma;
+	auto min_index = find_index_of_min_point();
 
-	for (size_t i = 1; i < m_points_count; i++)
+	for (size_t i = 0; i < m_points_count; i++)
 	{
+		if (i == min_index)
+			continue;
+
 		for (size_t j = 0; j < m_dimension; j++)
 		{
-			m_x[i][j] = m_x[0][j] + m_sigma * (m_x[i][j] - m_x[0][j]);
+			m_x[i][j] = m_x[min_index][j] + m_sigma * (m_x[i][j] - m_x[min_index][j]);
 		}
 	}
 
@@ -266,11 +277,17 @@ size_t simplex::find_index_of_min_reflected_point() const
 void simplex::report_deviation(std::string prefix)
 {
 	auto min_index = find_index_of_min_point();
-	log::info(SIMPLEX, prefix + ": " + to_string(m_y[min_index]));
+	log::info(SIMPLEX, to_string(m_current_step) + "/" + to_string(m_max_steps) + ". " + prefix + ": " + to_string(m_y[min_index]));
 }
 
 void simplex::on_init()
 {
+	log::success(SIMPLEX, "edge is " + to_string(m_l));
+	log::success(SIMPLEX, "min_edge is " + to_string(m_epsilon));
+	log::success(SIMPLEX, "divider is " + to_string(m_sigma));
+	log::success(SIMPLEX, "max_steps is " + to_string(m_max_steps));
+
+	m_current_step = 0;
 	m_dimension = m_data.get()->m_header.space_segments;
 	m_points_count = m_dimension + 1;
 	build_simplex(m_data.get()->m_conductivities);
@@ -281,6 +298,8 @@ void simplex::on_init()
 
 void simplex::on_iteration()
 {
+	m_current_step++;
+
 	if (try_reflect())
 	{
 		report_deviation("reflect");
@@ -305,5 +324,5 @@ void simplex::on_termination()
 
 bool simplex::termination_condition()
 {
-	return m_l < m_epsilon;
+	return m_l < m_epsilon || m_current_step >= m_max_steps;
 }

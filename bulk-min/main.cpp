@@ -101,24 +101,29 @@ void on_simplex(const map<string, string>& options)
 {
 	string parameter;
 
-	if (g_cli.match_option(options, "step", parameter))
+	if (g_cli.match_option(options, "edge", parameter))
 	{
-		g_simplex.set_step(stod(parameter));
+		g_simplex.set_edge(stod(parameter));
 	}
 
-	if (g_cli.match_option(options, "min_step", parameter))
+	if (g_cli.match_option(options, "min_edge", parameter))
 	{
-		g_simplex.set_min_step(stod(parameter));
+		g_simplex.set_min_edge(stod(parameter));
 	}
 
-	if (g_cli.match_option(options, "step_div", parameter))
+	if (g_cli.match_option(options, "edge_div", parameter))
 	{
-		g_simplex.set_step_divider(stod(parameter));
+		g_simplex.set_edge_divider(stod(parameter));
 	}
 
 	if (g_cli.match_option(options, "round", parameter))
 	{
 		g_simplex.set_round_enable(stoi(parameter));
+	}
+
+	if (g_cli.match_option(options, "max_steps", parameter))
+	{
+		g_simplex.set_max_steps(stoi(parameter));
 	}
 
 	g_simplex.run(g_data);
