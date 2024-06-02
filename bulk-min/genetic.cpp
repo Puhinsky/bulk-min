@@ -5,7 +5,7 @@ using namespace std;
 genetic::genetic()
 {
 	m_population_size = 20;
-	m_iteration_count = 10;
+	m_iteration_count = 100;
 	m_step = .1;
 	m_step_divider = 2.;
 }
@@ -33,9 +33,7 @@ void genetic::set_step_divider(double value)
 void genetic::build_population()
 {
 	size_t array_elements = m_data.get()->m_header.space_segments;
-	size_t array_size = array_elements * sizeof(double);
 	double* conductivity = m_populations[0].conductivity;
-	memcpy_s(conductivity, array_size, m_data.get()->m_conductivities, array_size);
 
 	uniform_real_distribution<double> unif(-m_L, m_L);
 	default_random_engine re(time(0));
@@ -51,6 +49,13 @@ void genetic::on_init()
 	for (int p = 0; p < m_population_size; p++)
 	{
 		m_populations[p].conductivity = new double[m_data.get()->m_header.space_segments];
+		if (p == 0)
+		{
+			size_t array_elements = m_data.get()->m_header.space_segments;
+			size_t array_size = array_elements * sizeof(double);
+			double* conductivity = m_populations[0].conductivity;
+			memcpy_s(conductivity, array_size, m_data.get()->m_conductivities, array_size);
+		}
 	}
 
 	m_iter = m_iteration_count;
@@ -79,13 +84,6 @@ void genetic::on_iteration()
 	{
 		m_populations[p].error = compute_task_sum(m_populations[p].conductivity);
 	}
-
-	/*
-bool genetic::sorting_function(generation const& lhs, generation const& rhs)
-{
-	return lhs.error < rhs.error;
-}
-	*/
 
 	sort(m_populations.begin(), m_populations.end(), [](auto lhs, auto rhs) {return lhs.error < rhs.error;});
 
@@ -147,8 +145,9 @@ bool genetic::sorting_function(generation const& lhs, generation const& rhs)
 				(m_L * (1 + m_erC) / m_step_divider) : 0.));
 	}
 
-	printf("Remaining iterations: %d | erC: %.3f | L: %.6f | Error: %f | Remaining time: %.1f s\n", m_iteration_count,
-		m_erC, m_L, m_populations[0].error, ((double)(clock() - m_internalClock)) * m_iter / 10 / CLOCKS_PER_SEC);
+	//TODO: Print via log class
+	printf("Remaining iterations: %d | erC: %.3f | L: %.6f | Error: %f | Remaining time: %.1f s\n", m_iter-1,
+		m_erC, m_L, m_populations[0].error, ((double)(clock() - m_internalClock)) * m_iter / CLOCKS_PER_SEC);
 
 	m_internalClock = clock();
 
@@ -162,6 +161,13 @@ bool genetic::termination_condition()
 
 void genetic::on_termination()
 {
+	//Commit changes
+	size_t array_elements = m_data.get()->m_header.space_segments;
+	size_t array_size = array_elements * sizeof(double);
+	double* conductivity = m_populations[0].conductivity;
+	memcpy_s(m_data.get()->m_conductivities, array_size, conductivity, array_size);
+
+	//Cleanup mess
 	for (int p = 0; p < m_population_size; p++)
 		delete m_populations[p].conductivity;
 }
