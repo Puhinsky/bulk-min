@@ -172,7 +172,7 @@ void base_method::run(shared_ptr<database> data)
 	do
 	{
 		on_iteration();
-	} while (termination_condition());
+	} while (!termination_condition());
 
 	on_termination();
 }
