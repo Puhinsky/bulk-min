@@ -2,6 +2,7 @@
 #include "parser.h"
 #include <memory>
 #include "cli.h"
+#include "exporter.h"
 
 using namespace std;
 
@@ -16,6 +17,7 @@ void on_simplex(const map<string, string>& options);
 cli g_cli;
 shared_ptr<database> g_data;
 parser g_parser;
+exporter g_exporter;
 simplex g_simplex;
 
 int main()
@@ -42,7 +44,14 @@ void on_parse(const map<string, string>& options)
 }
 
 void on_export(const map<string, string>& options)
-{}
+{
+	string file_path;
+
+	if (g_cli.require_option(options, "file", file_path))
+	{
+		g_exporter.export_data(g_data.get(), file_path);
+	}
+}
 
 void on_cycle(const map<string, string>&options)
 {}
