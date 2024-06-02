@@ -174,20 +174,24 @@ bool parser::try_parse(std::vector<std::string>& vec) const
 		log::error(PARSER, "Wrong number of GRID keywords");
 		return false;
 	}
-	if (tube_count != 1)
-	{
-		log::error(PARSER, "Wrong number of TUBE keywords");
-		return false;
-	}
 	if (temp_count != 1)
 	{
 		log::error(PARSER, "Wrong number of TEMP keywords");
 		return false;
 	}
-	if (slash_count != 6)
+	if (slash_count != 6 && slash_count != 4)
 	{
 		log::error(PARSER, "Wrong number of strings");
 		return false;
+	}
+	if (tube_count > 1)
+	{
+		log::error(PARSER, "Wrong number of TUBE keywords");
+		return false;
+	}
+	if (tube_count == 0)
+	{
+		log::info(PARSER, "File without TUBE section");
 	}
 
 	log::success(PARSER, "Keywords test passed");
@@ -198,7 +202,7 @@ bool parser::try_parse(std::vector<std::string>& vec) const
 	vec.push_back("");
 	vec.push_back("");
 	vec.push_back("");
-	//now "vec" is vector of 3 empty strings
+	//now "vec" is vector of 2 or 3 empty strings
 
 	for (size_t i = 0; i < temp_vec.size(); i++)
 	{
@@ -294,42 +298,46 @@ bool parser::try_read_data(std::vector<std::string>& vec, database& data)
 	int j = 0;
 	string temp_line = "";
 
-	//counts number of elements in TUBE section
-	while (i < vec[1].size())
+	//counts number of elements in TUBE section if this section exists
+	if (vec[1].size() > 0)
 	{
-		if (vec[1][i] == ' ' || vec[1][i] == '/')
+		while (i < vec[1].size())
 		{
-			j++;
+			if (vec[1][i] == ' ' || vec[1][i] == '/')
+			{
+				j++;
+			}
+			i++;
 		}
-		i++;
-	}
-	if (j != data.m_header.space_segments)
-	{
-		log::error(PARSER, "Wrong nuber of elements in TUBE section");
-		return false;
-	}
+		if (j != data.m_header.space_segments)
+		{
+			log::error(PARSER, "Wrong nuber of elements in TUBE section");
+			return false;
+		}
 
-	i = 0;
-	j = 0;
-	temp_line = "";
-	while (i < vec[1].size())
-	{
-		if (vec[1][i] != ' ' && vec[1][i] != '/')
+		i = 0;
+		j = 0;
+		temp_line = "";
+		while (i < vec[1].size())
 		{
-			temp_line += vec[1][i];
+			if (vec[1][i] != ' ' && vec[1][i] != '/')
+			{
+				temp_line += vec[1][i];
+			}
+			else
+			{
+				data.m_conductivities[j] = stod(temp_line);
+				temp_line = "";
+				j++;
+			}
+			i++;
 		}
-		else
+		if (j == data.m_header.space_segments)
 		{
-			data.m_conductivities[j] = stod(temp_line);
-			temp_line = "";
-			j++;
+			log::success(PARSER, "TUBE section infilled successfully");
 		}
-		i++;
 	}
-	if (j == data.m_header.space_segments)
-	{
-		log::success(PARSER, "TUBE section infilled successfully");
-	}
+	
 
 	i = 0;
 	j = 0;
@@ -433,15 +441,15 @@ bool parser::verificator(database& data)
 		return false;
 	}
 
-	//checks conductivity coefficients
-	for (int i = 0; i < data.m_header.space_segments; i++)
+	//checks conductivity coefficients if TUBE section exists
+	/*for (int i = 0; i < data.m_header.space_segments; i++)
 	{
 		if (data.m_conductivities[i] < 0)
 		{
 			log::error(PARSER, "Wrong value(s) of conductivity coeffecient(s)");
 			return false;
 		}
-	}
+	}*/
 
 	log::success(PARSER, "Data verification test passed successfully");
 
