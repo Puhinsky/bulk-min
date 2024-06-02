@@ -4,22 +4,29 @@ using namespace std;
 
 void cli::parse_and_execute_command(const std::string& input)
 {
-	size_t spacePos = input.find(' ');
-	string commandName = input.substr(0, spacePos);
-	string optionsString = (spacePos != string::npos) ? input.substr(spacePos + 1) : "";
+	istringstream iss(input);
+	string commandName;
+	iss >> commandName;
 
 	map<string, string> options;
-	size_t prevPos = 0;
-	size_t equalPos;
+	string option_pair;
 
-	while ((equalPos = optionsString.find('=', prevPos)) != string::npos)
+	while (iss >> option_pair)
 	{
-		string key = optionsString.substr(prevPos, equalPos - prevPos);
-		prevPos = equalPos + 1;
-		size_t nextPos = optionsString.find(' ', prevPos);
-		string value = optionsString.substr(prevPos, nextPos - prevPos);
-		options[key] = value;
-		prevPos = nextPos + 1;
+		size_t equal_pos = option_pair.find('=');
+
+		if (equal_pos != string::npos)
+		{
+			string key = option_pair.substr(0, equal_pos);
+			string value = option_pair.substr(equal_pos + 1);
+			options[key] = value;
+		}
+		else
+		{
+			log::error(CLI, "invalid option format: " + option_pair);
+
+			return;
+		}
 	}
 
 	execute_command(commandName, options);

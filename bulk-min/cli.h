@@ -5,6 +5,7 @@
 #include <map>
 #include <functional>
 #include <iostream>
+#include <sstream>
 
 class cli
 {
