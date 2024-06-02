@@ -42,7 +42,7 @@ public:
 	~simplex();
 
 	void set_edge(double value);
-	void set_divider(double value);
+	void set_edge_divider(double value);
 	void set_min_edge(double value);
 	void set_max_steps(size_t value);
 };

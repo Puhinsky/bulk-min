@@ -35,7 +35,7 @@ void simplex::set_edge(double value)
 	m_l = value;
 }
 
-void simplex::set_divider(double value)
+void simplex::set_edge_divider(double value)
 {
 	m_sigma = value;
 }
@@ -287,6 +287,7 @@ void simplex::on_init()
 	log::success(SIMPLEX, "divider is " + to_string(m_sigma));
 	log::success(SIMPLEX, "max_steps is " + to_string(m_max_steps));
 
+	m_current_step = 0;
 	m_dimension = m_data.get()->m_header.space_segments;
 	m_points_count = m_dimension + 1;
 	build_simplex(m_data.get()->m_conductivities);
