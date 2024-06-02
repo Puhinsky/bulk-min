@@ -15,7 +15,8 @@ map<log_source_e, string> log::m_source_map =
 	{GENETIC, "Genetic"},
 	{CYCLE, "Cycle"},
 	{SIMPLEX, "Simplex"},
-	{BASE_METHOD, "Base method"}
+	{BASE_METHOD, "Base method"},
+	{DATABASE, "Database"}
 };
 
 void log::print(const log_source_e source, const std::string& text)

@@ -8,11 +8,11 @@ class base_method
 {
 private:
 	bool m_round_enable;
-	std::shared_ptr<database> m_data;
-	std::unique_ptr<double[]> m_result_temperatures;
-	std::unique_ptr<double[]> m_error;
-	std::unique_ptr<double[]> m_p;
-	std::unique_ptr<double[]> m_q;
+	double* m_conductivities;
+	double* m_result_temperatures;
+	double* m_error;
+	double* m_p;
+	double* m_q;
 	double m_delta_space_multiplier;
 	void copy_first_layer();
 	void calculate_layer(size_t layer);
@@ -22,10 +22,14 @@ private:
 	inline void back_propagation(size_t layer);
 	inline size_t get_temperature_index(size_t layer, size_t space_number);
 	void evaluate_error(size_t layer, size_t index);
+	void print_temperatures() const;
+	void print_error() const;
+	void init_errors();
 
 protected:
-	std::shared_ptr<double[]> compute_task();
-	double compute_task_sum();
+	std::shared_ptr<database> m_data;
+	double* compute_task(double* conductivities);
+	double compute_task_sum(double* conductivities);
 	virtual void on_init();
 	virtual void on_iteration();
 	virtual void on_termination();
@@ -33,8 +37,10 @@ protected:
 
 public:
 	base_method();
+	~base_method();
 	void run(std::shared_ptr<database> data);
 	void set_round_enable(bool value);
 	bool get_round_enable() const;
+	double test_run(std::shared_ptr<database> data);
 };
 

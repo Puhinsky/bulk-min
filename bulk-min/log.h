@@ -11,7 +11,8 @@ enum log_source_e
 	GENETIC,
 	CYCLE,
 	SIMPLEX,
-	BASE_METHOD
+	BASE_METHOD,
+	DATABASE
 };
 
 class log

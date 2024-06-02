@@ -132,7 +132,10 @@
     <ClCompile Include="database.cpp" />
     <ClCompile Include="log.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="multi_vector.cpp" />
     <ClCompile Include="parser.cpp" />
+    <ClCompile Include="point.cpp" />
+    <ClCompile Include="simplex.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="base_method.h" />
@@ -140,6 +143,9 @@
     <ClInclude Include="header.h" />
     <ClInclude Include="log.h" />
     <ClInclude Include="parser.h" />
+    <ClInclude Include="point.h" />
+    <ClInclude Include="simplex.h" />
+    <ClInclude Include="multi_vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
