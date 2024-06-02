@@ -13,6 +13,7 @@ void exporter::export_data(database* pData, std::string file_path)
     if (!outputFile.is_open())
     {
         log::error(EXPORTER, "counldn't open: " + file_path);
+        return;
     }
 
     // HEADER
