@@ -125,6 +125,24 @@ bool parser::try_parse(std::vector<std::string>& vec) const
 		{
 			vec[i].push_back('/');
 		}
+
+		//erase excess spaces
+		int j = 0;
+		if (vec[i] != "")
+		{
+			while (vec[i][j] != '/')
+			{
+				if (vec[i][j] == ' ' && vec[i][j + 1] == ' ')
+				{
+					vec[i].erase(vec[i].begin() + j);
+				}
+				else
+				{
+					j++;
+				}
+			}
+		}
+		
 	}
 
 	//delete all empty lines
@@ -181,7 +199,7 @@ bool parser::try_parse(std::vector<std::string>& vec) const
 	}
 	if (slash_count != 6 && slash_count != 4)
 	{
-		log::error(PARSER, "Wrong number of strings");
+		log::error(PARSER, "Wrong number of sections or empty section");
 		return false;
 	}
 	if (tube_count > 1)
