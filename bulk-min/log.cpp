@@ -17,7 +17,8 @@ map<log_source_e, string> log::m_source_map =
 	{SIMPLEX, "Simplex"},
 	{BASE_METHOD, "Base method"},
 	{DATABASE, "Database"},
-	{CLI, "Cli"}
+	{CLI, "Cli"},
+	{VIZ, "Visualize"}
 };
 
 void log::print(const log_source_e source, const std::string& text)

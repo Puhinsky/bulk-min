@@ -138,6 +138,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="parser.cpp" />
     <ClCompile Include="simplex.cpp" />
+    <ClCompile Include="viewdata.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="base_method.h" />
@@ -150,6 +151,7 @@
     <ClInclude Include="log.h" />
     <ClInclude Include="parser.h" />
     <ClInclude Include="simplex.h" />
+    <ClInclude Include="viewdata.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

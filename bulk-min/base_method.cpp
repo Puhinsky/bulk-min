@@ -134,6 +134,22 @@ double* base_method::compute_task(double* conductivities)
 	return m_error;
 }
 
+void base_method::compute_task_errors(double* conductivities, double** errors)
+{
+	m_conductivities = conductivities;
+	copy_first_layer();
+
+	for (size_t i = 1; i < m_data.get()->m_header.time_segments; i++)
+	{
+		init_errors();
+		calculate_layer(i);
+
+		//Copy errors
+		for (size_t j = 0; j < m_data.get()->m_header.space_segments; j++)
+			errors[i][j] = m_error[j];
+	}
+}
+
 double base_method::compute_task_sum(double* conductivities)
 {
 	double error_sum = 0.0;

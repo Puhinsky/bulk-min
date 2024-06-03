@@ -1,6 +1,7 @@
 #include "simplex.h"
 #include "genetic.h"
 #include "cycle.h"
+#include "viewdata.h"
 #include "parser.h"
 #include <memory>
 #include "cli.h"
@@ -15,6 +16,7 @@ void on_export(const map<string, string>& options);
 void on_cycle(const map<string, string>& options);
 void on_genetic(const map<string, string>& options);
 void on_simplex(const map<string, string>& options);
+void on_visualize(const map<string, string>& options);
 
 cli g_cli;
 shared_ptr<database> g_data;
@@ -23,6 +25,7 @@ exporter g_exporter;
 simplex g_simplex;
 genetic g_genetic;
 cycle g_cycle;
+viewdata g_visualize;
 
 int main()
 {
@@ -31,6 +34,7 @@ int main()
 	g_cli.register_command("cycle", on_cycle);
 	g_cli.register_command("genetic", on_genetic);
 	g_cli.register_command("simplex", on_simplex);
+	g_cli.register_command("viz", on_visualize);
 
 	g_cli.start();
 
@@ -62,6 +66,11 @@ void on_export(const map<string, string>& options)
 	{
 		g_exporter.export_data(g_data.get(), file_path);
 	}
+}
+
+void on_visualize(const map<string, string>&options)
+{
+	g_visualize.run(g_data);
 }
 
 void on_cycle(const map<string, string>&options)

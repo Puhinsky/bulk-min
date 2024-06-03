@@ -33,6 +33,7 @@ protected:
 	std::shared_ptr<database> m_data;
 	double* compute_task(double* conductivities);
 	double compute_task_sum(double* conductivities);
+	void compute_task_errors(double* conductivities, double** errors);
 	virtual void on_init();
 	virtual void on_iteration();
 	virtual void on_termination();
