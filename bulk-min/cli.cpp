@@ -56,6 +56,7 @@ void cli::start()
 
 	while (true)
 	{
+		cout << "CLI>";
 		getline(cin, input);
 
 		if (input == "exit")

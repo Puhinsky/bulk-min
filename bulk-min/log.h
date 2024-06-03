@@ -13,7 +13,8 @@ enum log_source_e
 	SIMPLEX,
 	BASE_METHOD,
 	DATABASE,
-	CLI
+	CLI,
+	VIZ
 };
 
 class log

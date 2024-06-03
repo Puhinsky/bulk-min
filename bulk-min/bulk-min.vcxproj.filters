@@ -9,6 +9,9 @@
     <ClCompile Include="simplex.cpp" />
     <ClCompile Include="cli.cpp" />
     <ClCompile Include="exporter.cpp" />
+    <ClCompile Include="cycle.cpp" />
+    <ClCompile Include="genetic.cpp" />
+    <ClCompile Include="viewdata.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="base_method.h" />
@@ -19,5 +22,8 @@
     <ClInclude Include="simplex.h" />
     <ClInclude Include="cli.h" />
     <ClInclude Include="exporter.h" />
+    <ClInclude Include="cycle.h" />
+    <ClInclude Include="genetic.h" />
+    <ClInclude Include="viewdata.h" />
   </ItemGroup>
 </Project>
