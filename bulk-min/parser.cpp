@@ -441,15 +441,16 @@ bool parser::verificator(database& data)
 		return false;
 	}
 
-	//checks conductivity coefficients if TUBE section exists
-	/*for (int i = 0; i < data.m_header.space_segments; i++)
+	//checks conductivity coefficients
+	for (int i = 0; i < data.m_header.space_segments; i++)
 	{
+		//cout << data.m_conductivities[i] << endl;
 		if (data.m_conductivities[i] < 0)
 		{
 			log::error(PARSER, "Wrong value(s) of conductivity coeffecient(s)");
 			return false;
 		}
-	}*/
+	}
 
 	log::success(PARSER, "Data verification test passed successfully");
 
