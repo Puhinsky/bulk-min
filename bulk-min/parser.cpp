@@ -253,6 +253,11 @@ bool parser::try_read_header(std::vector<std::string>& vec, header& header) cons
 	{
 		if (vec[0][i] != ' ' && vec[0][i] != '/')
 		{
+			if (isdigit(vec[0][i]) == false && vec[0][i] != '.')
+			{
+				log::error(PARSER, "Wrong symbol in GRID section");
+				return false;
+			}
 			temp_line += vec[0][i];
 			k++;
 		}
@@ -325,6 +330,11 @@ bool parser::try_read_data(std::vector<std::string>& vec, database& data)
 			{
 				j++;
 			}
+			else if (isdigit(vec[1][i]) == false && (vec[1][i] != '.'))
+			{
+				log::error(PARSER, "Wrong symbol in TUBE section");
+				return false;
+			}
 			i++;
 		}
 		if (j != data.m_header.space_segments)
@@ -375,6 +385,11 @@ bool parser::try_read_data(std::vector<std::string>& vec, database& data)
 				j++;
 				k++;
 			}
+		}
+		else if (isdigit(vec[2][i]) == false && (vec[2][i] != '.') && (vec[2][i] != '-'))
+		{
+			log::error(PARSER, "Wrong symbol in TEMP section");
+			return false;
 		}
 		i++;
 	}
